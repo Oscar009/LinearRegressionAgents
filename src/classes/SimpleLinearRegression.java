@@ -11,6 +11,7 @@ import org.json.simple.DeserializationException;
 public class SimpleLinearRegression {
   private String filePath;
   private boolean isEqualLengthDataSet = false;
+  private LinearAlgebra linearAlgebra = new LinearAlgebra();
 
   public SimpleLinearRegression(String path) throws FileNotFoundException, IOException, DeserializationException {
     filePath = path;
@@ -27,45 +28,31 @@ public class SimpleLinearRegression {
     if (!isEqualLengthDataSet)
       return new BigDecimal(-1);
 
-    Summation summation = new Summation();
-
     BigDecimal sumy = new BigDecimal(0);
-    sumy = summation.getValue(getData("y"));
+    sumy = linearAlgebra.summationArray(getData("y"));
     BigDecimal sumx = new BigDecimal(0);
-    sumx = summation.getValue(getData("x"));
+    sumx = linearAlgebra.summationArray(getData("x"));
     BigDecimal n = new BigDecimal(getData("x").size());
 
-    // System.out.println((sumy.subtract(getBeta_1().multiply(sumx))).divide(n,
-    // MathContext.DECIMAL128));
-
-    return ((sumy.subtract(getBeta_1().multiply(sumx))).divide(n, MathContext.DECIMAL128));
+    return ((sumy.subtract(getBeta_1().multiply(sumx))).divide(n, MathContext.DECIMAL64));
   }
 
   public BigDecimal getBeta_1() throws FileNotFoundException, IOException, DeserializationException {
     if (!isEqualLengthDataSet)
       return new BigDecimal(-1);
 
-    MultiplyArrays multiplyArrays = new MultiplyArrays();
-    Summation summation = new Summation();
-
     BigDecimal n = new BigDecimal(getData("x").size());
     BigDecimal sumxy = new BigDecimal(0);
-    sumxy = summation.getValue(multiplyArrays.getResult(getData("x"), getData("y")));
+    sumxy = linearAlgebra.summationArray(linearAlgebra.multiplyArrays(getData("x"), getData("y")));
     BigDecimal sumx = new BigDecimal(0);
-    sumx = summation.getValue(getData("x"));
+    sumx = linearAlgebra.summationArray(getData("x"));
     BigDecimal sumy = new BigDecimal(0);
-    sumy = summation.getValue(getData("y"));
+    sumy = linearAlgebra.summationArray(getData("y"));
     BigDecimal sumx2 = new BigDecimal(0);
-    sumx2 = summation.getValue(multiplyArrays.getResult(getData("x"), getData("x")));
-
-    // System.out.println((n.multiply(sumxy)).subtract(sumx.multiply(sumy)));
-    // System.out.println((n.multiply(sumx2)).subtract(sumx.multiply(sumx)));
-
-    // System.out.println((n.multiply(sumxy)).subtract(sumx.multiply(sumy)).divide((n.multiply(sumx2)).subtract(sumx.multiply(sumx)),
-    // MathContext.DECIMAL128));
+    sumx2 = linearAlgebra.summationArray(linearAlgebra.multiplyArrays(getData("x"), getData("x")));
 
     return ((n.multiply(sumxy)).subtract(sumx.multiply(sumy))
-        .divide((n.multiply(sumx2)).subtract(sumx.multiply(sumx)), MathContext.DECIMAL128));
+        .divide((n.multiply(sumx2)).subtract(sumx.multiply(sumx)), MathContext.DECIMAL64));
   }
 
 }
