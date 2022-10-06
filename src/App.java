@@ -6,7 +6,6 @@ public class App {
         String filePath = "./src/dataSLR.json";
 
         SimpleLinearRegression slr = new SimpleLinearRegression(filePath);
-
-        System.out.println("y^ = " + slr.getBeta_0() + " + " + slr.getBeta_1() + " X");
+        System.out.println(slr.getRegressionEquation());
     }
 }
