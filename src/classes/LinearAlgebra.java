@@ -56,19 +56,19 @@ public class LinearAlgebra {
       ArrayList<ArrayList<BigDecimal>> matriz2) {
     ArrayList<ArrayList<BigDecimal>> aux = new ArrayList<ArrayList<BigDecimal>>(matriz1.get(0).size());
 
-    for (int i = 0; i < matriz1.get(0).size(); i++) {
-      
-      for (int j = 0; j < matriz2.size(); j++) {
+    for (int i = 0; i < matriz1.size(); i++) {
+
+      for (int j = 0; j < matriz2.get(0).size(); j++) {
         BigDecimal sum = new BigDecimal(0);
+        System.out.print("[" + i + "][" + j + "]: ");
         for (int k = 0; k < matriz2.size(); k++) {
-          // test para recorrer todos los valores de matriz1 
           sum = sum.add(matriz1.get(i).get(k).multiply(matriz2.get(k).get(j)));
         }
         System.out.println(sum);
-      } 
+      }
     }
 
-  return aux;
-}
+    return aux;
+  }
 
 }
