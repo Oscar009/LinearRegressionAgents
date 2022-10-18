@@ -22,9 +22,14 @@ public class ReadData {
 
       JsonArray jArray = (JsonArray) deserialize.get(key);
 
-      for (int i = 0; i < jArray.size(); i++) {
-        data.add((BigDecimal) jArray.get(i));
+      JsonObject des = (JsonObject) jArray.get(0);
+
+      JsonArray DAT = (JsonArray) des.get("data");
+
+      for (int i = 0; i < DAT.size(); i++) {
+        data.add((BigDecimal) DAT.get(i));
       }
+
     }
   }
 
