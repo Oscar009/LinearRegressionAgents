@@ -25,13 +25,12 @@ public class MultipleLinearRegressionVectorized {
     matrizT.add(ones);
     matrizT.add(getData("x1"));
     matrizT.add(getData("x2"));
-    matrizT.add(getData("y"));
 
     ArrayList<ArrayList<BigDecimal>> matriz = linearAlgebra.matrixTranspose(matrizT);
 
     ArrayList<ArrayList<BigDecimal>> matrizTXmatriz = linearAlgebra.matrixMultiplication(matrizT, matriz);
 
-    ArrayList<ArrayList<BigDecimal>> M1 = linearAlgebra.inverseMatrix(matrizTXmatriz);
+    /* ArrayList<ArrayList<BigDecimal>> M1 = */ linearAlgebra.inverseMatrix(matrizTXmatriz);
 
   }
 
