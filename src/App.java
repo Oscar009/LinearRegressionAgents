@@ -9,7 +9,7 @@ public class App {
         System.out.println(slr.getRegressionEquation()); */
 
         MultipleLinearRegressionVectorized mlrv = new MultipleLinearRegressionVectorized("./src/dataMLR.json");
-        // System.out.println(mlrv.getRegressionEquation());
+        System.out.println(mlrv.getRegressionEquation());
 
         /* DescendingGradient dg = new DescendingGradient(filePath);
         dg.optimizeParameters(); */

@@ -11,12 +11,16 @@ public class MultipleLinearRegressionVectorized {
   private String filePath;
   private LinearAlgebra linearAlgebra = new LinearAlgebra();
 
+  private BigDecimal beta_0;
+  private BigDecimal beta_1;
+  private BigDecimal beta_2;
+
   public MultipleLinearRegressionVectorized(String path)
       throws FileNotFoundException, IOException, DeserializationException {
     filePath = path;
 
     ArrayList<ArrayList<BigDecimal>> matrizT = new ArrayList<ArrayList<BigDecimal>>(getData("y").size());
-    
+
     ArrayList<BigDecimal> ones = new ArrayList<BigDecimal>();
 
     for (int i = 0; i < getData("y").size(); i++) {
@@ -30,8 +34,17 @@ public class MultipleLinearRegressionVectorized {
 
     ArrayList<ArrayList<BigDecimal>> matrizTXmatriz = linearAlgebra.matrixMultiplication(matrizT, matriz);
 
-    /* ArrayList<ArrayList<BigDecimal>> M1 = */ linearAlgebra.inverseMatrix(matrizTXmatriz);
+    ArrayList<ArrayList<BigDecimal>> Minverse = linearAlgebra.inverseMatrix(matrizTXmatriz);
 
+    ArrayList<ArrayList<BigDecimal>> y = new ArrayList<ArrayList<BigDecimal>>(1);
+    y.add(getData("y"));
+
+    ArrayList<ArrayList<BigDecimal>> results = linearAlgebra.matrixMultiplication(Minverse,
+        linearAlgebra.matrixMultiplication(matrizT, linearAlgebra.matrixTranspose(y)));
+
+    beta_0 = results.get(0).get(0);
+    beta_1 = results.get(1).get(0);
+    beta_2 = results.get(2).get(0);
   }
 
   public ArrayList<BigDecimal> getData(String key) throws FileNotFoundException, IOException, DeserializationException {
@@ -40,7 +53,7 @@ public class MultipleLinearRegressionVectorized {
   }
 
   public String getRegressionEquation() {
-    return "Equation";
+    return "y = " + beta_0 + " + " + beta_1 + "x1 " + beta_2 + "x2 " + "+ epsilon";
   }
 
 }

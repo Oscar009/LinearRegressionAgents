@@ -1,6 +1,7 @@
 package classes;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 
 public class LinearAlgebra {
@@ -49,35 +50,54 @@ public class LinearAlgebra {
   public ArrayList<ArrayList<BigDecimal>> inverseMatrix(ArrayList<ArrayList<BigDecimal>> matriz) {
     ArrayList<ArrayList<BigDecimal>> aux = new ArrayList<ArrayList<BigDecimal>>(matriz.get(0).size());
 
-    /* System.out.println(matriz.get(0).get(0));
-    System.out.println(matriz.get(1).get(1));
-    System.out.println(matriz.get(2).get(2)); */
+    // Calculo de determinante
+    // Primero las 6 diagonales
     BigDecimal aux1 = matriz.get(0).get(0).multiply(matriz.get(1).get(1).multiply(matriz.get(2).get(2)));
-    /* System.out.println(matriz.get(0).get(1));
-    System.out.println(matriz.get(2).get(1));
-    System.out.println(matriz.get(0).get(2)); */
+
     BigDecimal aux2 = matriz.get(0).get(1).multiply(matriz.get(2).get(1).multiply(matriz.get(0).get(2)));
-    /* System.out.println(matriz.get(2).get(0));
-    System.out.println(matriz.get(0).get(1));
-    System.out.println(matriz.get(1).get(2)); */
+
     BigDecimal aux3 = matriz.get(2).get(0).multiply(matriz.get(0).get(1).multiply(matriz.get(1).get(2)));
-
     // menos
-
-    /* System.out.println(matriz.get(0).get(2));
-    System.out.println(matriz.get(1).get(1));
-    System.out.println(matriz.get(2).get(0)); */
     BigDecimal aux4 = matriz.get(0).get(2).multiply(matriz.get(1).get(1).multiply(matriz.get(2).get(0)));
-    /* System.out.println(matriz.get(1).get(2));
-    System.out.println(matriz.get(2).get(1));
-    System.out.println(matriz.get(0).get(0)); */
+
     BigDecimal aux5 = matriz.get(1).get(2).multiply(matriz.get(2).get(1).multiply(matriz.get(0).get(0)));
-    /* System.out.println(matriz.get(2).get(2));
-    System.out.println(matriz.get(0).get(1));
-    System.out.println(matriz.get(1).get(0)); */
+
     BigDecimal aux6 = matriz.get(2).get(2).multiply(matriz.get(0).get(1).multiply(matriz.get(1).get(0)));
-    
-    System.out.println(aux1.add(aux2).add(aux3).subtract(aux4.add(aux5).add(aux6)));
+    // determinante
+    BigDecimal determinant = aux1.add(aux2).add(aux3).subtract(aux4.add(aux5).add(aux6));
+    // Calculamos la adjunta
+    ArrayList<ArrayList<BigDecimal>> adjunta = new ArrayList<ArrayList<BigDecimal>>(matriz.get(0).size());
+    // primera fila de matriz
+    ArrayList<BigDecimal> f1 = new ArrayList<BigDecimal>(matriz.get(0).size());
+    // 0-0 | 0-1 | 0-2
+    f1.add(determinant2x2(matriz, 1, 1, 2, 2, 1, 2, 2, 1));
+    f1.add(determinant2x2(matriz, 1, 0, 2, 2, 1, 2, 2, 0).multiply(new BigDecimal(-1)));
+    f1.add(determinant2x2(matriz, 1, 0, 2, 1, 1, 1, 2, 0));
+    // segunda fila de matriz
+    ArrayList<BigDecimal> f2 = new ArrayList<BigDecimal>(matriz.get(0).size());
+    f2.add(determinant2x2(matriz, 0, 1, 2, 2, 0, 2, 2, 1).multiply(new BigDecimal(-1)));
+    f2.add(determinant2x2(matriz, 0, 0, 2, 2, 0, 2, 2, 0));
+    f2.add(determinant2x2(matriz, 0, 0, 2, 1, 0, 1, 2, 0).multiply(new BigDecimal(-1)));
+    // tercera fila de matriz
+    ArrayList<BigDecimal> f3 = new ArrayList<BigDecimal>(matriz.get(0).size());
+    f3.add(determinant2x2(matriz, 0, 1, 1, 2, 0, 2, 1, 1));
+    f3.add(determinant2x2(matriz, 0, 0, 1, 2, 0, 2, 1, 0).multiply(new BigDecimal(-1)));
+    f3.add(determinant2x2(matriz, 0, 0, 1, 1, 0, 1, 1, 0));
+
+    adjunta.add(f1);
+    adjunta.add(f2);
+    adjunta.add(f3);
+    // System.out.println(adjunta);
+
+    for (int i = 0; i < matriz.size(); i++) {
+      ArrayList<BigDecimal> row = new ArrayList<BigDecimal>(matriz.size());
+      for (int j = 0; j < adjunta.get(0).size(); j++) {
+        row.add(adjunta.get(i).get(j).divide(determinant, MathContext.DECIMAL64));
+      }
+      aux.add(row);
+    }
+
+    // System.out.println(aux);
 
     return aux;
   }
@@ -101,6 +121,12 @@ public class LinearAlgebra {
     }
 
     return aux;
+  }
+
+  public BigDecimal determinant2x2(ArrayList<ArrayList<BigDecimal>> matriz, int i1, int j1, int i2, int j2, int i3,
+      int j3, int i4, int j4) {
+    return matriz.get(i1).get(j1).multiply(matriz.get(i2).get(j2))
+        .subtract(matriz.get(i3).get(j3).multiply(matriz.get(i4).get(j4)));
   }
 
 }
