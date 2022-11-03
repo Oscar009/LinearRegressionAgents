@@ -69,7 +69,7 @@ public class MultipleLinearRegressionCramer {
   }
 
   public String getRegressionEquation() {
-    return "y = " + beta_0 + " + " + beta_1 + "x1 " + beta_2 + "x2 " + "+ epsilon";
+    return "y = " + beta_0 + " + " + beta_1 + "x1 + " + beta_2 + "x2 " + "+ epsilon";
   }
 
 }

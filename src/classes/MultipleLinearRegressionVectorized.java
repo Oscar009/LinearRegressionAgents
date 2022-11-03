@@ -56,4 +56,10 @@ public class MultipleLinearRegressionVectorized {
     return "y = " + beta_0 + " + " + beta_1 + "x1 " + beta_2 + "x2 " + "+ epsilon";
   }
 
+  public BigDecimal pronostic(BigDecimal a, BigDecimal b) {
+    BigDecimal aux = beta_0.add(beta_1.multiply(a)).add(beta_2.multiply(b));
+
+    return aux;
+  }
+
 }

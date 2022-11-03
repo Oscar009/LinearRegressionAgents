@@ -11,6 +11,8 @@ import org.json.simple.DeserializationException;
 public class DescendingGradient {
   private BigDecimal beta_0;
   private BigDecimal beta_1;
+  private BigDecimal dBeta_0;
+  private BigDecimal dBeta_1;
   private BigDecimal alpha;
   private String filePath;
 
@@ -46,16 +48,36 @@ public class DescendingGradient {
       beta_0_aux = beta_0_aux.add(xi.get(0).multiply(yi.get(i).subtract(beta_0.add(beta_1.multiply(xi.get(i))))));
     }
 
-    beta_0 = (new BigDecimal(-2).divide(new BigDecimal(xi.size()), MathContext.DECIMAL64)).multiply(beta_0_aux);
-    beta_1 = (new BigDecimal(-2).divide(new BigDecimal(xi.size()), MathContext.DECIMAL64)).multiply(beta_1_aux);
+    dBeta_0 = (new BigDecimal(-2).divide(new BigDecimal(xi.size()), MathContext.DECIMAL64)).multiply(beta_0_aux);
+    dBeta_1 = (new BigDecimal(-2).divide(new BigDecimal(xi.size()), MathContext.DECIMAL64)).multiply(beta_1_aux);
 
-    System.out.println(beta_0);
-    System.out.println(beta_1);
-
+    // System.out.println(beta_0);
+    // System.out.println(beta_1);
+    lossFunction();
   }
 
-  public void lossFunction() {
-    
+  public void lossFunction() throws FileNotFoundException, IOException, DeserializationException {
+    ArrayList<BigDecimal> yi = getData("y");
+    ArrayList<BigDecimal> xi = getData("x");
+
+    BigDecimal error = new BigDecimal(0);
+
+    for (int i = 0; i < getData("y").size(); i++) {
+      error = error.add((yi.get(i).subtract(beta_0.add(beta_1.multiply(xi.get(i))))).pow(2));
+    }
+
+    error = (new BigDecimal(1).divide(new BigDecimal(getData("y").size()), MathContext.DECIMAL64)).multiply(error);
+
+    System.out.println(error);
+
+    if(error.compareTo(new BigDecimal(0.1)) == 1){
+      System.out.println("Last value: " + error);
+    }
+    else{
+      beta_0 = beta_0.subtract(alpha.multiply(dBeta_0));
+      beta_1 = beta_1.subtract(alpha.multiply(dBeta_1));
+      optimizeParameters();
+    }
   }
 
 }
