@@ -15,12 +15,14 @@ public class DescendingGradient {
   private BigDecimal dBeta_1;
   private BigDecimal alpha;
   private String filePath;
+  private BigDecimal tolerance;
 
   public DescendingGradient(String path) {
     // Step 1
     beta_0 = new BigDecimal(0);
     beta_1 = new BigDecimal(0);
     alpha = new BigDecimal(0.003);
+    tolerance = new BigDecimal(0.1);
     filePath = path;
   }
 
@@ -40,20 +42,20 @@ public class DescendingGradient {
     BigDecimal beta_1_aux = new BigDecimal(0);
     // Calculo de beta_1
     for (int i = 0; i < yi.size(); i++) {
-      beta_1_aux = beta_1_aux.add(yi.get(i).subtract(beta_0.add(beta_1.multiply(xi.get(i)))));
+      // beta_1_aux = beta_1_aux.add(xi.get(0).multiply(yi.get(i).subtract(beta_0.add(beta_1.multiply(xi.get(i))))));
     }
 
     // Calculo de beta_0
     for (int i = 0; i < yi.size(); i++) {
-      beta_0_aux = beta_0_aux.add(xi.get(0).multiply(yi.get(i).subtract(beta_0.add(beta_1.multiply(xi.get(i))))));
+      // beta_0_aux = beta_0_aux.add(yi.get(i).subtract(beta_0.add(beta_1.multiply(xi.get(i)))));
     }
 
-    dBeta_0 = (new BigDecimal(-2).divide(new BigDecimal(xi.size()), MathContext.DECIMAL64)).multiply(beta_0_aux);
     dBeta_1 = (new BigDecimal(-2).divide(new BigDecimal(xi.size()), MathContext.DECIMAL64)).multiply(beta_1_aux);
+    dBeta_0 = (new BigDecimal(-2).divide(new BigDecimal(xi.size()), MathContext.DECIMAL64)).multiply(beta_0_aux);
 
     // System.out.println(beta_0);
     // System.out.println(beta_1);
-    lossFunction();
+    // lossFunction();
   }
 
   public void lossFunction() throws FileNotFoundException, IOException, DeserializationException {
@@ -68,12 +70,9 @@ public class DescendingGradient {
 
     error = (new BigDecimal(1).divide(new BigDecimal(getData("y").size()), MathContext.DECIMAL64)).multiply(error);
 
-    System.out.println(error);
-
-    if(error.compareTo(new BigDecimal(0.1)) == 1){
+    if (error.compareTo(new BigDecimal(0.1)) == 0) {
       System.out.println("Last value: " + error);
-    }
-    else{
+    } else {
       beta_0 = beta_0.subtract(alpha.multiply(dBeta_0));
       beta_1 = beta_1.subtract(alpha.multiply(dBeta_1));
       optimizeParameters();

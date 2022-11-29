@@ -36,6 +36,8 @@ public class MultipleLinearRegressionCramer {
     BigDecimal Syiporx1i = linearAlgebra.summationArray(linearAlgebra.multiplyArrays(yi, x1i));
     BigDecimal Syiporx2i = linearAlgebra.summationArray(linearAlgebra.multiplyArrays(yi, x2i));
 
+    System.out.println("PANTALLA: " + linearAlgebra.summationArray(linearAlgebra.multiplyArrays(x1i, x1i)));
+
     // obtener determinantes
     // Determinante del sistema
     BigDecimal Ds = n.multiply(Sx1i2).multiply(Sx2i2).add(Sx1i.multiply(Sx1iporx2i).multiply(Sx2i))
@@ -50,7 +52,8 @@ public class MultipleLinearRegressionCramer {
     // Determinante beta_1
     BigDecimal Dbeta_1 = Syi.multiply(Sx1i).multiply(Sx2i2).add(n.multiply(Sx1iporx2i).multiply(Syiporx2i))
         .add(Sx2i.multiply(Syiporx1i).multiply(Sx2i)).subtract(Syiporx2i.multiply(Sx1i).multiply(Sx2i))
-        .subtract(Sx2i.multiply(Sx1iporx2i).multiply(Syi)).subtract(Sx2i2.multiply(Syiporx1i).multiply(n)).multiply(new BigDecimal(-1));
+        .subtract(Sx2i.multiply(Sx1iporx2i).multiply(Syi)).subtract(Sx2i2.multiply(Syiporx1i).multiply(n))
+        .multiply(new BigDecimal(-1));
 
     // Determinante beta_2
     BigDecimal Dbeta_2 = Syi.multiply(Sx1i).multiply(Sx1iporx2i).add(n.multiply(Sx1i2).multiply(Syiporx2i))
