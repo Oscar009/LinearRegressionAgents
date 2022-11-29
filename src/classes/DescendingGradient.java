@@ -21,8 +21,10 @@ public class DescendingGradient {
     // Step 1
     beta_0 = new BigDecimal(0);
     beta_1 = new BigDecimal(0);
-    alpha = new BigDecimal(0.003);
-    tolerance = new BigDecimal(0.1);
+    dBeta_0 = new BigDecimal(0);
+    dBeta_1 = new BigDecimal(0);
+    alpha = new BigDecimal(0.01);
+    tolerance = new BigDecimal(1);
     filePath = path;
   }
 
@@ -34,31 +36,58 @@ public class DescendingGradient {
   public void optimizeParameters() throws FileNotFoundException, IOException, DeserializationException {
 
     // Step 2
+
+    partialB1();
+    partialB1();
+
+    lossFunction();
+  }
+
+  public void partialB1() throws FileNotFoundException, IOException, DeserializationException {
     ArrayList<BigDecimal> xi = getData("x");
     ArrayList<BigDecimal> yi = getData("y");
 
-    // Auxiliares para valores en sumatorias
-    BigDecimal beta_0_aux = new BigDecimal(0);
     BigDecimal beta_1_aux = new BigDecimal(0);
-    // Calculo de beta_1
+    // Calculo de beta_1 parcial
     for (int i = 0; i < yi.size(); i++) {
-      // beta_1_aux = beta_1_aux.add(xi.get(0).multiply(yi.get(i).subtract(beta_0.add(beta_1.multiply(xi.get(i))))));
+      beta_1_aux = beta_1_aux.add(yi.get(i).subtract(beta_0.add(beta_1.multiply(xi.get(i)))));
     }
 
-    // Calculo de beta_0
+    dBeta_1 = (new BigDecimal(-2).divide(new BigDecimal(xi.size()), MathContext.DECIMAL32)).multiply(beta_1_aux);
+  }
+
+  public void partialB0() throws FileNotFoundException, IOException, DeserializationException {
+    ArrayList<BigDecimal> xi = getData("x");
+    ArrayList<BigDecimal> yi = getData("y");
+    BigDecimal beta_0_aux = new BigDecimal(0);
+    // Calculo de beta_0 parcial
     for (int i = 0; i < yi.size(); i++) {
-      // beta_0_aux = beta_0_aux.add(yi.get(i).subtract(beta_0.add(beta_1.multiply(xi.get(i)))));
+      beta_0_aux = beta_0_aux.add(xi.get(0).multiply(yi.get(i).subtract(beta_0.add(beta_1.multiply(xi.get(i))))));
     }
-
-    dBeta_1 = (new BigDecimal(-2).divide(new BigDecimal(xi.size()), MathContext.DECIMAL64)).multiply(beta_1_aux);
-    dBeta_0 = (new BigDecimal(-2).divide(new BigDecimal(xi.size()), MathContext.DECIMAL64)).multiply(beta_0_aux);
-
-    // System.out.println(beta_0);
-    // System.out.println(beta_1);
-    // lossFunction();
+    dBeta_0 = (new BigDecimal(-2).divide(new BigDecimal(xi.size()), MathContext.DECIMAL32)).multiply(beta_0_aux);
   }
 
   public void lossFunction() throws FileNotFoundException, IOException, DeserializationException {
+
+    BigDecimal auxError = calculateError();
+    int counter = 0;
+
+    while (auxError.compareTo(tolerance) == 1) {
+      beta_0 = beta_0.subtract(alpha.multiply(dBeta_0));
+      beta_1 = beta_1.subtract(alpha.multiply(dBeta_1));
+      System.out.println("\nVuelta: " + counter);
+      System.out.println("Error: " + auxError);
+      System.out.println("b0: " + beta_0);
+      System.out.println("b1: " + beta_1);
+      auxError = calculateError();
+      partialB1();
+      partialB0();
+      counter++;
+    }
+
+  }
+
+  public BigDecimal calculateError() throws FileNotFoundException, IOException, DeserializationException {
     ArrayList<BigDecimal> yi = getData("y");
     ArrayList<BigDecimal> xi = getData("x");
 
@@ -69,14 +98,7 @@ public class DescendingGradient {
     }
 
     error = (new BigDecimal(1).divide(new BigDecimal(getData("y").size()), MathContext.DECIMAL64)).multiply(error);
-
-    if (error.compareTo(new BigDecimal(0.1)) == 0) {
-      System.out.println("Last value: " + error);
-    } else {
-      beta_0 = beta_0.subtract(alpha.multiply(dBeta_0));
-      beta_1 = beta_1.subtract(alpha.multiply(dBeta_1));
-      optimizeParameters();
-    }
+    return error;
   }
 
 }

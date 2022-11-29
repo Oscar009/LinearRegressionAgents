@@ -30,10 +30,10 @@ public class App {
          * System.out.println(mlrc.getRegressionEquation());
          */
 
-        /* DescendingGradient dg = new DescendingGradient(filePath);
-        dg.optimizeParameters(); */
+        DescendingGradient dg = new DescendingGradient(filePath);
+        dg.optimizeParameters();
 
-        logisticRegression lg = new logisticRegression();
+        // logisticRegression lg = new logisticRegression();
 
     }
 }
